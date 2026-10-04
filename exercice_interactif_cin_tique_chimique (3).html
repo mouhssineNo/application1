@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercice 1 - Cinétique Chimique (Interactif)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- KaTeX CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <style>
+        .table-custom th, .table-custom td {
+            border: 1px solid #cbd5e1;
+            padding: 8px 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen py-8 px-4 sm:px-6 lg:px-8 relative">
+
+    <div class="max-w-4xl mx-auto space-y-8 relative z-10">
+        
+        <!-- Header -->
+        <header class="text-center space-y-2 bg-gradient-to-r from-blue-700 via-indigo-700 to-indigo-900 text-white p-6 sm:p-8 rounded-2xl shadow-xl relative">
+            <span class="bg-blue-500/30 text-blue-100 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Chimie 2ème BAC</span>
+            <h1 class="text-2xl sm:text-3xl font-bold">Exercice 1 : Suivi Temporel de la Réaction</h1>
+            <p class="text-blue-100 text-sm sm:text-base">Oxydation des ions iodure $I^-$ par l'eau oxygénée $H_2O_2$</p>
+
+            <!-- Badge Contact WhatsApp dans le Header -->
+            <div class="pt-2">
+                <a href="https://wa.me/212661094946" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-semibold px-3.5 py-1.5 rounded-full shadow-md hover:shadow-lg transition">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                    </svg>
+                    <span>Contact WhatsApp</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Enoncé de l'exercice -->
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <div class="flex items-center space-x-2 border-b border-slate-100 pb-3">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+                <h2 class="text-xl font-bold text-slate-800">Énoncé de l'exercice</h2>
+            </div>
+            
+            <div class="space-y-3 text-slate-700 leading-relaxed text-sm sm:text-base">
+                <p>
+                    À la date $t = 0\text{ s}$, on ajoute une solution acidifiée d'iodure de potassium $(K^+ + I^-)$ de concentration 
+                    <span class="font-semibold text-blue-900">$C_1 = 0{,}01\text{ mol/L}$</span> et de volume <span class="font-semibold text-blue-900">$V_1 = 100\text{ mL}$</span> 
+                    à une solution d'eau oxygénée $(H_2O_2)$ de concentration <span class="font-semibold text-blue-900">$C_2 = 10^{-2}\text{ mol/L}$</span> 
+                    et de volume <span class="font-semibold text-blue-900">$V_2 = 100\text{ mL}$</span>.
+                </p>
+                <p>
+                    À $t = 15\text{ s}$, la coloration est jaune. Lorsqu'on ajoute de l'acide sulfurique, la coloration devient brune après $30\text{ min}$.
+                </p>
+                <p>
+                    À l'aide d'une technique adaptée, on obtient la courbe ci-dessous donnant l'évolution temporelle de la concentration $[I_2]$ du diiode formé en fonction du temps.
+                </p>
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-3 rounded text-sm text-amber-900">
+                    <strong>Donnée :</strong> Toutes les mesures sont effectuées à la température de $25^\circ\text{C}$.
+                </div>
+            </div>
+        </section>
+
+        <!-- Graphique interactif -->
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                    </svg>
+                    <h2 class="text-xl font-bold text-slate-800">Courbe de la concentration $[I_2] = f(t)$</h2>
+                </div>
+                <span class="text-xs bg-blue-100 text-blue-800 font-semibold px-3 py-1 rounded-full">Survolez pour lire les points</span>
+            </div>
+            
+            <div class="relative h-72 sm:h-80 w-full">
+                <canvas id="kineticChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Questions et solutions cliquables -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-bold text-slate-800">Questions & Solution Interactive</h2>
+                <button onclick="toggleAllSolutions()" id="btn-toggle-all" class="text-xs sm:text-sm font-semibold bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg transition">
+                    Tout afficher / Tout masquer
+                </button>
+            </div>
+
+            <!-- Question 1 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5">
+                    <h3 class="font-semibold text-slate-800 text-base sm:text-lg mb-2">
+                        1. La réaction étudiée est-elle une transformation lente ou rapide ?
+                    </h3>
+                    <button onclick="toggleSolution(1)" class="mt-2 inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-2 rounded-lg transition shadow-sm">
+                        <span>Afficher la réponse</span>
+                        <svg class="w-4 h-4 transform transition-transform" id="icon-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                </div>
+                <div id="solution-1" class="hidden bg-blue-50/60 border-t border-slate-200 p-5 space-y-2 text-slate-700">
+                    <p class="font-semibold text-blue-900">Réponse :</p>
+                    <p>La réaction étudiée est une <strong>transformation lente</strong>.</p>
+                    <p class="text-sm text-slate-600">
+                        <strong>Justification :</strong> Le changement de couleur (du jaune au brun) se déroule sur une durée de plusieurs minutes ($30\text{ min}$), ce qui permet de suivre son évolution à l'œil nu et par des techniques de mesure.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5">
+                    <h3 class="font-semibold text-slate-800 text-base sm:text-lg mb-2">
+                        2. Définir la transformation lente.
+                    </h3>
+                    <button onclick="toggleSolution(2)" class="mt-2 inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-2 rounded-lg transition shadow-sm">
+                        <span>Afficher la réponse</span>
+                        <svg class="w-4 h-4 transform transition-transform" id="icon-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                </div>
+                <div id="solution-2" class="hidden bg-blue-50/60 border-t border-slate-200 p-5 space-y-2 text-slate-700">
+                    <p class="font-semibold text-blue-900">Définition :</p>
+                    <p>
+                        Une <strong>transformation lente</strong> est une transformation qui se déroule sur une longue durée, que l'on peut suivre à l'œil nu ainsi qu'avec des instruments de mesure, et où l'on peut distinguer l'état initial de l'état final.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5">
+                    <h3 class="font-semibold text-slate-800 text-base sm:text-lg mb-2">
+                        3. Donner le rôle de l'acide sulfurique.
+                    </h3>
+                    <button onclick="toggleSolution(3)" class="mt-2 inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-2 rounded-lg transition shadow-sm">
+                        <span>Afficher la réponse</span>
+                        <svg class="w-4 h-4 transform transition-transform" id="icon-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                </div>
+                <div id="solution-3" class="hidden bg-blue-50/60 border-t border-slate-200 p-5 space-y-3 text-slate-700">
+                    <p class="font-semibold text-blue-900">Rôle de l'acide sulfurique :</p>
+                    <div class="bg-emerald-50 border-l-4 border-emerald-500 p-3 rounded text-sm text-emerald-900 font-medium">
+                        L'acide sulfurique joue le rôle de <strong>catalyseur (accélérateur de la réaction)</strong> en fournissant les ions $H^+$ indispensables pour augmenter la vitesse de réaction sans modifier l'état final.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5">
+                    <h3 class="font-semibold text-slate-800 text-base sm:text-lg mb-2">
+                        4. Donner les couples qui interviennent dans la réaction.
+                    </h3>
+                    <button onclick="toggleSolution(4)" class="mt-2 inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-2 rounded-lg transition shadow-sm">
+                        <span>Afficher la réponse</span>
+                        <svg class="w-4 h-4 transform transition-transform" id="icon-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                </div>
+                <div id="solution-4" class="hidden bg-blue-50/60 border-t border-slate-200 p-5 space-y-3 text-slate-700">
+                    <p class="font-semibold text-blue-900">Les couples d'oxydoréduction :</p>
+                    <div class="bg-white p-3.5 rounded-lg border border-slate-200 text-sm space-y-2 font-mono">
+                        <p>1. $H_2O_2\text{ (aq)} / H_2O\text{ (l)}$ : Réduction de l'eau oxygénée</p>
+                        <p class="text-blue-700 pl-4">$H_2O_2 + 2H^+ + 2e^- \rightleftharpoons 2H_2O$</p>
+                        <p>2. $I_2\text{ (aq)} / I^-\text{ (aq)}$ : Oxydation des ions iodure</p>
+                        <p class="text-blue-700 pl-4">$2I^- \rightleftharpoons I_2 + 2e^-$</p>
+                    </div>
+                    <p class="text-sm font-semibold text-slate-800">Équation bilan globale :</p>
+                    <p class="text-center font-bold text-indigo-900 bg-indigo-50 p-2.5 rounded border border-indigo-200">
+                        $H_2O_2\text{ (aq)} + 2I^-\text{ (aq)} + 2H^+\text{ (aq)} \rightarrow I_2\text{ (aq)} + 2H_2O\text{ (l)}$
+                    </p>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5">
+                    <h3 class="font-semibold text-slate-800 text-base sm:text-lg mb-2">
+                        5. Dresser le tableau d'avancement littéral et déterminer le réactif limitant.
+                    </h3>
+                    <button onclick="toggleSolution(5)" class="mt-2 inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-2 rounded-lg transition shadow-sm">
+                        <span>Afficher la réponse</span>
+                        <svg class="w-4 h-4 transform transition-transform" id="icon-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                </div>
+                <div id="solution-5" class="hidden bg-blue-50/60 border-t border-slate-200 p-5 space-y-4 text-slate-700">
+                    
+                    <p class="font-semibold text-blue-900">Tableau d'avancement littéral ($C_1, V_1, C_2, V_2, x$) :</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs sm:text-sm bg-white rounded-lg shadow-sm table-custom">
+                            <thead class="bg-slate-100 text-slate-800 font-semibold">
+                                <tr>
+                                    <th colspan="2" class="whitespace-nowrap w-1/4">Équation chimique</th>
+                                    <th colspan="5">$H_2O_2\text{ (aq)} + 2I^-\text{ (aq)} + 2H^+\text{ (aq)} \rightarrow I_2\text{ (aq)} + 2H_2O\text{ (l)}$</th>
+                                </tr>
+                                <tr>
+                                    <th class="whitespace-nowrap w-28">État</th>
+                                    <th class="whitespace-nowrap w-28">Avancement ($mol$)</th>
+                                    <th colspan="5">Quantités de matière ($mol$)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-medium whitespace-nowrap">Initial ($t=0$)</td>
+                                    <td>$0$</td>
+                                    <td>$C_2 \cdot V_2$</td>
+                                    <td>$C_1 \cdot V_1$</td>
+                                    <td>Excès</td>
+                                    <td>$0$</td>
+                                    <td>Excès</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium whitespace-nowrap">En cours ($t$)</td>
+                                    <td>$x$</td>
+                                    <td>$C_2 \cdot V_2 - x$</td>
+                                    <td>$C_1 \cdot V_1 - 2x$</td>
+                                    <td>Excès</td>
+                                    <td>$x$</td>
+                                    <td>Excès</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium whitespace-nowrap">Final ($t_{max}$)</td>
+                                    <td>$x_{max}$</td>
+                                    <td>$C_2 \cdot V_2 - x_{max}$</td>
+                                    <td>$C_1 \cdot V_1 - 2x_{max}$</td>
+                                    <td>Excès</td>
+                                    <td>$x_{max}$</td>
+                                    <td>Excès</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p class="font-semibold text-blue-900">Applications Numériques (A.N.) :</p>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 space-y-3 text-sm">
+                        <div>
+                            <p class="font-semibold text-slate-800">1. Quantités de matière initiales $n_0$ :</p>
+                            <ul class="list-disc list-inside pl-2 space-y-1 font-mono text-xs sm:text-sm">
+                                <li>$n_0(I^-) = C_1 \cdot V_1 = 0{,}01 \times 0{,}100 = 1{,}0 \cdot 10^{-3}\text{ mol} = \mathbf{1{,}0\text{ mmol}}$</li>
+                                <li>$n_0(H_2O_2) = C_2 \cdot V_2 = 10^{-2} \times 0{,}100 = 1{,}0 \cdot 10^{-3}\text{ mol} = \mathbf{1{,}0\text{ mmol}}$</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <p class="font-semibold text-slate-800">2. Réactif limitant :</p>
+                            <ul class="list-disc list-inside pl-2 space-y-1 font-mono text-xs sm:text-sm">
+                                <li>Si $H_2O_2$ est limitant : $C_2 \cdot V_2 - x_{max1} = 0 \implies x_{max1} = \mathbf{1{,}0\text{ mmol}}$</li>
+                                <li>Si $I^-$ est limitant : $C_1 \cdot V_1 - 2x_{max2} = 0 \implies x_{max2} = \frac{1{,}0}{2} = \mathbf{0{,}50\text{ mmol}}$</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-indigo-50 border border-indigo-200 p-3 rounded text-indigo-900 font-semibold">
+                            Puisque $x_{max2} < x_{max1}$ ($0{,}50\text{ mmol} < 1{,}0\text{ mmol}$), le <strong>réactif limitant est l'ion iodure $I^-$</strong>, et <strong>$x_{max} = 0{,}50\text{ mmol} = 5{,}0 \cdot 10^{-4}\text{ mol}$</strong>.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5">
+                    <h3 class="font-semibold text-slate-800 text-base sm:text-lg mb-2">
+                        6. Déterminer la composition du mélange à $t = 2\text{ s}$.
+                    </h3>
+                    <button onclick="toggleSolution(6)" class="mt-2 inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-2 rounded-lg transition shadow-sm">
+                        <span>Afficher la réponse</span>
+                        <svg class="w-4 h-4 transform transition-transform" id="icon-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                </div>
+                <div id="solution-6" class="hidden bg-blue-50/60 border-t border-slate-200 p-5 space-y-4 text-slate-700">
+                    
+                    <div>
+                        <p class="font-semibold text-blue-900">Étape 1 : Lecture graphique à $t = 2\text{ s}$</p>
+                        <p class="text-sm font-mono bg-white p-2.5 rounded border border-slate-200">
+                            $[I_2](2\text{s}) = \mathbf{1{,}0\text{ mmol/L}} = 1{,}0 \cdot 10^{-3}\text{ mol/L}$
+                        </p>
+                    </div>
+
+                    <div>
+                        <p class="font-semibold text-blue-900">Étape 2 : Volume total du mélange $V_T$</p>
+                        <p class="text-sm font-mono bg-white p-2.5 rounded border border-slate-200">
+                            $V_T = V_1 + V_2 = 100\text{ mL} + 100\text{ mL} = 200\text{ mL} = \mathbf{0{,}200\text{ L}}$
+                        </p>
+                    </div>
+
+                    <div>
+                        <p class="font-semibold text-blue-900">Étape 3 : Calcul de l'avancement $x(2\text{s})$</p>
+                        <p class="text-sm font-mono bg-white p-2.5 rounded border border-slate-200 text-blue-800">
+                            $x(2\text{s}) = [I_2] \cdot V_T = 1{,}0\text{ mmol/L} \times 0{,}200\text{ L} = \mathbf{0{,}20\text{ mmol}} = 2{,}0 \cdot 10^{-4}\text{ mol}$
+                        </p>
+                    </div>
+
+                    <div>
+                        <p class="font-semibold text-blue-900">Étape 4 : Composition molaire (Littéral + A.N.)</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mt-2">
+                            <div class="bg-white p-3 rounded-lg border border-slate-200">
+                                <p class="font-bold text-slate-800">$n(I_2)$ formé :</p>
+                                <p class="text-xs text-slate-600 font-mono">Littéral : $n(I_2) = x$</p>
+                                <p class="text-xs font-bold text-blue-700 font-mono mt-1">A.N. : $n(I_2) = \mathbf{0{,}20\text{ mmol}}$</p>
+                            </div>
+
+                            <div class="bg-white p-3 rounded-lg border border-slate-200">
+                                <p class="font-bold text-slate-800">$n(I^-)$ restant :</p>
+                                <p class="text-xs text-slate-600 font-mono">Littéral : $n(I^-) = C_1 \cdot V_1 - 2x$</p>
+                                <p class="text-xs font-bold text-blue-700 font-mono mt-1">A.N. : $1{,}0 - 0{,}40 = \mathbf{0{,}60\text{ mmol}}$</p>
+                            </div>
+
+                            <div class="bg-white p-3 rounded-lg border border-slate-200">
+                                <p class="font-bold text-slate-800">$n(H_2O_2)$ restant :</p>
+                                <p class="text-xs text-slate-600 font-mono">Littéral : $n(H_2O_2) = C_2 \cdot V_2 - x$</p>
+                                <p class="text-xs font-bold text-blue-700 font-mono mt-1">A.N. : $1{,}0 - 0{,}20 = \mathbf{0{,}80\text{ mmol}}$</p>
+                            </div>
+
+                            <div class="bg-white p-3 rounded-lg border border-slate-200">
+                                <p class="font-bold text-slate-800">$n(K^+)$ spectateur :</p>
+                                <p class="text-xs text-slate-600 font-mono">Littéral : $n(K^+) = C_1 \cdot V_1$</p>
+                                <p class="text-xs font-bold text-blue-700 font-mono mt-1">A.N. : $n(K^+) = \mathbf{1{,}0\text{ mmol}}$</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-xs text-slate-500 py-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <span>Exercice interactif de chimie • Niveau 2ème BAC</span>
+            <a href="https://wa.me/212661094946" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2 text-emerald-700 bg-emerald-100 hover:bg-emerald-200 font-semibold px-3 py-1.5 rounded-full border border-emerald-300 transition">
+                <svg class="w-4 h-4 fill-current text-emerald-600" viewBox="0 0 24 24">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                </svg>
+                <span>Contact WhatsApp</span>
+            </a>
+        </footer>
+
+    </div>
+
+    <!-- Bouton Flottant WhatsApp -->
+    <a href="https://wa.me/212661094946" target="_blank" rel="noopener noreferrer" class="fixed bottom-5 right-5 z-50 bg-emerald-500 hover:bg-emerald-600 text-white p-3.5 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 group" title="Contactez-nous sur WhatsApp">
+        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+        </svg>
+        <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out text-xs font-semibold pl-0 group-hover:pl-2">Contact WhatsApp</span>
+    </a>
+
+    <script>
+        // Render Math equations with KaTeX
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false}
+                ]
+            });
+
+            // Initialize Interactive Chart
+            const ctx = document.getElementById('kineticChart').getContext('2d');
+            
+            const timePoints = [0, 1, 2, 4, 6, 8, 10, 12];
+            const concPoints = [0.0, 0.56, 1.00, 1.60, 1.96, 2.18, 2.30, 2.38];
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timePoints,
+                    datasets: [{
+                        label: '[I₂] (mmol/L)',
+                        data: concPoints,
+                        borderColor: '#2563eb',
+                        borderWidth: 3,
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: timePoints.map(t => t === 2 ? '#dc2626' : '#2563eb'),
+                        pointBorderColor: timePoints.map(t => t === 2 ? '#ffffff' : '#2563eb'),
+                        pointBorderWidth: timePoints.map(t => t === 2 ? 3 : 1),
+                        pointRadius: timePoints.map(t => t === 2 ? 8 : 4),
+                        pointHoverRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: { font: { size: 13, weight: 'bold' } }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 13 },
+                            callbacks: {
+                                label: function(context) {
+                                    return ` [I₂] = ${context.parsed.y} mmol/L à t = ${context.parsed.x} s`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Temps t (s)',
+                                font: { weight: 'bold', size: 13 }
+                            },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Concentration [I₂] (mmol/L)',
+                                font: { weight: 'bold', size: 13 }
+                            },
+                            min: 0,
+                            max: 3,
+                            grid: { color: '#e2e8f0' }
+                        }
+                    }
+                }
+            });
+        });
+
+        // Toggle individual answers
+        function toggleSolution(id) {
+            const sol = document.getElementById(`solution-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (sol.classList.contains('hidden')) {
+                sol.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                sol.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Toggle all answers at once
+        let allOpen = false;
+        function toggleAllSolutions() {
+            allOpen = !allOpen;
+            for (let i = 1; i <= 6; i++) {
+                const sol = document.getElementById(`solution-${i}`);
+                const icon = document.getElementById(`icon-${i}`);
+                if (allOpen) {
+                    sol.classList.remove('hidden');
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    sol.classList.add('hidden');
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
